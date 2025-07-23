@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Votazioni Karaoke</title>
+
+  <!-- Font e stile -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="StyleIndex.css" />
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <img src="img/LogoKikaoke.svg" alt="Logo Kikabox" class="logopiccolo" />
+  </header>
+
+  <div id="chatBox">
+    <h1 class="testomagenta titolocentrato" style="margin-bottom: 20px;">
+      <i class="fa-solid fa-star"></i> Vota la performance Karaoke
+    </h1>
+
+    <label for="cantante">Chi ha cantato?</label>
+    <input type="text" id="cantante" placeholder="Nome del cantante" />
+
+    <label for="brano">Titolo del brano</label>
+    <input type="text" id="brano" placeholder="Titolo del brano eseguito" />
+
+    <label for="interpretazione">Interpretazione</label>
+    <select id="interpretazione">
+      <option value="">Scegli un voto</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+    </select>
+
+    <label for="scelta">Scelta del brano</label>
+    <select id="scelta">
+      <option value="">Scegli un voto</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+    </select>
+
+    <label for="tecnica">Tecnica vocale</label>
+    <select id="tecnica">
+      <option value="">Scegli un voto</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+    </select>
+
+    <label for="coinvolgimento">Coinvolgimento</label>
+    <select id="coinvolgimento">
+      <option value="">Scegli un voto</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+    </select>
+
+    <button onclick="inviaVoto()">Invia Voto</button>
+
+    <div id="messaggio" class="success" style="display:none; text-align: center; margin-top: 10px;">
+      ✅ Voto registrato, grazie!
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAd86VRjAKDRO35FmkIBpezjWNjjyt1k-Y",
+      authDomain: "kikabox-7a71b.firebaseapp.com",
+      projectId: "kikabox-7a71b",
+      storageBucket: "kikabox-7a71b.appspot.com",
+      messagingSenderId: "921138873322",
+      appId: "1:921138873322:web:148bad4db454d57bbaa893"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function inviaVoto() {
+      const cantante = document.getElementById('cantante').value.trim();
+      const brano = document.getElementById('brano').value.trim();
+      const interpretazione = parseInt(document.getElementById('interpretazione').value);
+      const scelta = parseInt(document.getElementById('scelta').value);
+      const tecnica = parseInt(document.getElementById('tecnica').value);
+      const coinvolgimento = parseInt(document.getElementById('coinvolgimento').value);
+
+      if (!cantante || !brano || !interpretazione || !scelta || !tecnica || !coinvolgimento) {
+        alert("Compila tutti i campi con valori validi.");
+        return;
+      }
+
+      const chiave = `voto_${cantante}_${brano}`;
+      if (localStorage.getItem(chiave)) {
+        alert("Hai già votato per questa performance.");
+        return;
+      }
+
+      db.collection("voti_karaoke").add({
+        cantante,
+        brano,
+        interpretazione,
+        branoScelto: scelta,
+        tecnica,
+        coinvolgimento,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        localStorage.setItem(chiave, true);
+        document.getElementById('messaggio').style.display = 'block';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta name="description" content="Jukebox Virtuale Kikabox – Richiedi brani, canta al karaoke, partecipa alla chat e vota le performance.">
+  <title>Kikabox – Jukebox Virtuale</title>
+
+  <!-- Font Montserrat Bold -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="StyleIndex.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <img src="img/LogoKikaoke.svg" alt="Logo Kikabox" />
+  </header>
+
+  <div class="button-grid">
+    <a class="button" href="ascolto.html"><i class="fa-solid fa-headphones"></i><span>Richieste di ascolto</span></a>
+    <a class="button" href="karaoke.html"><i class="fa-solid fa-microphone"></i><span>Karaoke</span></a>
+    <a class="button" href="chat.html"><i class="fa-solid fa-comments"></i><span>Chat pubblica</span></a>
+    <a class="button" href="chat-privata.html"><i class="fa-solid fa-people-arrows"></i><span>Chat privata</span></a>
+    <a class="button" href="votazioni.html"><i class="fa-solid fa-heart"></i><span>Votazioni</span></a>
+    <a class="button" href="suggerimenti.html"><i class="fa-solid fa-music"></i><span>Suggerisci un brano</span></a>
+    <a class="button" href="annunci.html"><i class="fa-solid fa-bullhorn"></i><span>Annunci</span></a>
+    <a class="button" href="manager.html"><i class="fa-solid fa-lock"></i><span>Area manager</span></a>
+  </div>
+
+  <div id="annunciPubblici">
+    <h2><span class="testomagenta"><i class="fa-solid fa-bullhorn"></i> Annunci</span></h2>
+    <ul id="listaAnnunciPubblici">
+      <li>Caricamento annunci...</li>
+    </ul>
+  </div>
+
+  <footer>
+    &copy; 2025 Kikaoke – Tutti i diritti riservati
+  </footer>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAd86VRjAKDRO35FmkIBpezjWNjjyt1k-Y",
+      authDomain: "kikabox-7a71b.firebaseapp.com",
+      projectId: "kikabox-7a71b",
+      storageBucket: "kikabox-7a71b.appspot.com",
+      messagingSenderId: "921138873322",
+      appId: "1:921138873322:web:148bad4db454d57bbaa893",
+      measurementId: "G-V27WV50TBE"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const lista = document.getElementById("listaAnnunciPubblici");
+
+    function mostraAnnunciPubblici() {
+      db.collection("annunci").orderBy("timestamp", "desc").limit(5)
+        .onSnapshot(snapshot => {
+          lista.innerHTML = "";
+          if (snapshot.empty) {
+            lista.innerHTML = "<li>Nessun annuncio al momento.</li>";
+          } else {
+            snapshot.forEach(doc => {
+              const a = doc.data();
+              const dataOra = a.timestamp?.toDate
+                ? a.timestamp.toDate().toLocaleString("it-IT")
+                : new Date(a.timestamp).toLocaleString("it-IT");
+              const li = document.createElement("li");
+              li.innerHTML = `<strong>${dataOra}</strong><br/>${a.testo}`;
+              lista.appendChild(li);
+            });
+          }
+        }, error => {
+          lista.innerHTML = "<li>Errore nel caricamento annunci.</li>";
+          console.error("Errore Firebase:", error);
+        });
+    }
+
+    mostraAnnunciPubblici();
+  </script>
+</body>
+</html>

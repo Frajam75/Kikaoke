@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manager Kikabox</title>
+
+  <!-- Font e icone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="StyleIndex.css" />
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <img src="img/LogoKikaoke.svg" alt="Logo Kikabox" class="logopiccolo" />
+  </header>
+
+  <div id="chatBox">
+    <h1 class="testomagenta titolocentrato" style="margin-bottom: 20px;">
+      <i class="fa-solid fa-sliders"></i> Area Manager
+    </h1>
+
+    <nav class="button-grid">
+      <a class="button" href="#" onclick="mostra('karaoke')"><i class="fa-solid fa-microphone"></i><span>Karaoke</span></a>
+      <a class="button" href="#" onclick="mostra('ascolto')"><i class="fa-solid fa-headphones"></i><span>Ascolto</span></a>
+      <a class="button" href="#" onclick="mostra('annunci')"><i class="fa-solid fa-bullhorn"></i><span>Annunci</span></a>
+      <a class="button" href="#" onclick="mostra('votazioni')"><i class="fa-solid fa-star"></i><span>Votazioni</span></a>
+    </nav>
+
+    <section id="karaoke" class="active">
+      <h2 class="testomagenta"><i class="fa-solid fa-microphone"></i> Richieste Karaoke</h2>
+      <label><input type="checkbox" id="filtroGara" onchange="aggiornaFiltroKaraoke()"> Mostra solo chi partecipa alla gara</label>
+      <table>
+        <thead>
+          <tr><th>Brano</th><th>Richiedente</th><th>Dedica</th><th>Eseguito</th><th>In gara</th></tr>
+        </thead>
+        <tbody id="tabellaKaraoke"></tbody>
+      </table>
+    </section>
+
+    <section id="ascolto">
+      <h2 class="testomagenta"><i class="fa-solid fa-headphones"></i> Richieste di Ascolto</h2>
+      <button onclick="esportaCSV()">📥 Esporta CSV</button>
+      <table>
+        <thead>
+          <tr><th>Artista</th><th>Titolo</th><th>Richiedente</th><th>Dedica</th><th>Fatto</th></tr>
+        </thead>
+        <tbody id="tabellaAscolto"></tbody>
+      </table>
+    </section>
+
+    <section id="annunci">
+      <h2 class="testomagenta"><i class="fa-solid fa-bullhorn"></i> Annunci</h2>
+      <textarea id="testoAnnuncio" placeholder="Scrivi un annuncio..." rows="2" style="width:100%;"></textarea>
+      <button onclick="inviaAnnuncio()">📨 Pubblica Annuncio</button>
+      <div id="notificaAnnuncio" style="background:#d4edda;color:#155724;padding:10px;margin-top:10px;border:1px solid #c3e6cb;border-radius:5px;display:none;">
+        ✅ Annuncio pubblicato con successo!
+      </div>
+      <ul id="listaAnnunci"></ul>
+    </section>
+
+    <section id="votazioni">
+      <h2 class="testomagenta"><i class="fa-solid fa-star"></i> Votazioni Karaoke</h2>
+      <table>
+        <thead>
+          <tr><th>Cantante</th><th>Brano</th><th>Media voto</th><th>Numero voti</th></tr>
+        </thead>
+        <tbody id="tabellaVoti"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAd86VRjAKDRO35FmkIBpezjWNjjyt1k-Y",
+      authDomain: "kikabox-7a71b.firebaseapp.com",
+      projectId: "kikabox-7a71b",
+      storageBucket: "kikabox-7a71b.appspot.com",
+      messagingSenderId: "921138873322",
+      appId: "1:921138873322:web:148bad4db454d57bbaa893"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+  <!-- Il resto del JS del manager può essere reintegrato qui -->
+</body>
+</html>

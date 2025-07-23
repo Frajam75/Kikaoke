@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messaggi Live Kikabox</title>
+
+  <!-- Font e Stili -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="StyleIndex.css" />
+
+  <style>
+    body {
+      margin: 0;
+      background: #1e1e2f;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      overflow: hidden;
+    }
+    .marquee {
+      position: absolute;
+      bottom: 40%;
+      white-space: nowrap;
+      will-change: transform;
+      animation: scrollText 60s linear infinite;
+      font-size: 3em;
+      color: magenta;
+      text-shadow: 2px 2px 4px #000;
+      padding: 0 100%;
+    }
+    @keyframes scrollText {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+
+  <script type="module">
+    import {{ initializeApp }} from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js';
+    import {{ getFirestore, collection, query, where, onSnapshot }} from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js';
+
+    const firebaseConfig = {{
+      apiKey: "AIzaSyAd86VRjAKDRO35FmkIBpezjWNjjyt1k-Y",
+      authDomain: "kikabox-7a71b.firebaseapp.com",
+      projectId: "kikabox-7a71b",
+      storageBucket: "kikabox-7a71b.firebasestorage.app",
+      messagingSenderId: "921138873322",
+      appId: "1:921138873322:web:148bad4db454d57bbaa893",
+      measurementId: "G-V27WV50TBE"
+    }};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const q = query(collection(db, "messaggi"), where("approvato", "==", true));
+
+    const marquee = document.createElement("div");
+    marquee.className = "marquee";
+    document.body.appendChild(marquee);
+
+    onSnapshot(q, snapshot => {
+      const texts = [];
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        texts.push(`${{msg.nome || "Anonimo"}}: ${{msg.testo}}`);
+      });
+      marquee.textContent = texts.join(" • ");
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>
